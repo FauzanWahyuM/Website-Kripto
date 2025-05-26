@@ -1,0 +1,31 @@
+# .github/workflows/ci-lint.yml
+name: Frontend CI Linting
+
+on:
+  push:
+    branches:
+      - main # Jalankan workflow setiap kali ada push ke branch 'main'
+      - develop # Tambahkan branch lain jika Anda menggunakannya
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  lint: # Nama job
+    runs-on: ubuntu-latest # Lingkungan di mana job akan berjalan
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # Mengambil kode dari repositori GitHub
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4 # Mengatur Node.js di lingkungan CI
+      with:
+        node-version: '18' # Gunakan versi Node.js yang stabil dan kompatibel
+
+    - name: Install dependencies
+      run: npm install # Menginstal semua dependencies dari package.json (termasuk eslint)
+
+    - name: Run ESLint Linting
+      run: npm run lint # Menjalankan script 'lint' yang sudah kita definisikan di package.json
