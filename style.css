@@ -1,0 +1,388 @@
+/* Definisi Variabel CSS untuk Tema */
+:root {
+    /* Light Mode */
+    --body-bg: #FDF9F3; /* Slightly brighter Soft Cream / Off-white */
+    --text-color: #333333; /* Darker Gray for main text */
+    --header-bg: #E3F2FD; /* Soft Sky Blue */
+    --header-heading-color: #6A96C2; /* Muted Blue for heading */
+    --main-bg: #EDF7FF; /* Lighter Blue-Gray */
+    --border-color: #C1D4E0; /* Softer border */
+    --input-bg: #F0F8FF; /* Even lighter Blue-Gray */
+    --input-placeholder-color: #777777; /* Muted placeholder */
+    --button-bg: #A6D4EA; /* Soft Blue */
+    --button-text-color: #333333; /* Darker text for button */
+    --button-hover-bg: #8CC0D8; /* Slightly darker blue on hover */
+    --table-header-bg: #E3F2FD; /* Soft Sky Blue */
+    --table-header-color: #6A96C2; /* Muted Blue for table header */
+    --table-row-even-bg: #FDF9F3; /* Slightly brighter Soft Cream for even rows */
+    --table-row-hover-bg: #E6F3FB; /* Very light blue on hover */
+    --price-up-color: #6BBE92; /* Soft Green for price increase */
+    --price-down-color: #E68A91; /* Soft Red for price decrease */
+    --modal-bg: #EDF7FF; /* Lighter Blue-Gray */
+    --link-color: #6BBE92; /* Soft Green for links */
+    --link-hover-color: #A6D4EA; /* Soft Blue on hover */
+    --shadow-color: rgba(0, 0, 0, 0.1); /* Softer shadow */
+    --modal-shadow-color: rgba(0, 0, 0, 0.25); /* Softer modal shadow */
+    --close-button-color: #777777; /* Muted close button */
+}
+
+/* Dark Mode (tetap sama seperti sebelumnya, karena permintaan hanya untuk light mode) */
+body.dark-theme {
+    --body-bg: #1a1a2e; /* Dark background */
+    --text-color: #e0e0e0; /* Light text */
+    --header-bg: #0f3460; /* Darker blue header */
+    --header-heading-color: #e94560; /* Accent color for heading */
+    --main-bg: #16213e; /* Slightly lighter dark background for main content */
+    --border-color: #16213e;
+    --input-bg: #0f3460;
+    --input-placeholder-color: #a0a0a0;
+    --button-bg: #e94560;
+    --button-text-color: white;
+    --button-hover-bg: #c73650;
+    --table-header-bg: #0f3460;
+    --table-header-color: #e94560;
+    --table-row-even-bg: #1a1a2e;
+    --table-row-hover-bg: #1e3a6c;
+    --price-up-color: #4CAF50; /* Green */
+    --price-down-color: #F44336; /* Red */
+    --modal-bg: #16213e;
+    --link-color: #7289da; /* Discord-like blue */
+    --link-hover-color: #99aab5;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --modal-shadow-color: rgba(0, 0, 0, 0.5);
+    --close-button-color: #aaa;
+}
+
+
+/* General Styling (menggunakan variabel) */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transisi untuk perubahan tema */
+}
+
+header {
+    background-color: var(--header-bg);
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+h1 {
+    color: var(--header-heading-color);
+    margin: 0;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap; /* Agar responsif pada layar kecil */
+    justify-content: center;
+    width: 100%;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+}
+
+#searchInput {
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--input-bg);
+    color: var(--text-color); /* Menggunakan text-color yang lebih gelap */
+    font-size: 1rem;
+    width: 250px;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+#searchInput::placeholder {
+    color: var(--input-placeholder-color);
+}
+
+#searchButton {
+    background-color: var(--button-bg);
+    color: var(--button-text-color); /* Menggunakan button-text-color yang lebih gelap */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#searchButton:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* Theme Toggle Button Styling */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-color); /* Menggunakan text-color yang lebih gelap */
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--header-bg); /* Use header background as hover effect */
+    color: var(--header-heading-color);
+}
+
+
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: var(--main-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px var(--modal-shadow-color);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.loading-message {
+    text-align: center;
+    font-style: italic;
+    color: var(--input-placeholder-color); /* Reuse muted color */
+}
+
+/* Table Styling */
+.crypto-list-container {
+    overflow-x: auto;
+}
+
+.crypto-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.crypto-table th, .crypto-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+.crypto-table th {
+    background-color: var(--table-header-bg);
+    color: var(--table-header-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.crypto-table tbody tr {
+    transition: background-color 0.2s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.crypto-table tbody tr:hover {
+    background-color: var(--table-row-hover-bg);
+}
+
+.crypto-table tbody tr:nth-child(even) {
+    background-color: var(--table-row-even-bg);
+}
+
+.crypto-table td img {
+    vertical-align: middle;
+    margin-right: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.price-up {
+    color: var(--price-up-color);
+    font-weight: 600;
+}
+
+.price-down {
+    color: var(--price-down-color);
+    font-weight: 600;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5); /* Overlay tetap gelap */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--modal-bg);
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 5px 20px var(--modal-shadow-color);
+    position: relative;
+    color: var(--text-color);
+    animation: fadeIn 0.3s ease-out;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-button {
+    color: var(--close-button-color);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--link-hover-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#coinDetailContent h2 {
+    color: var(--header-heading-color);
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s ease;
+}
+
+#coinDetailContent h2 img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+#coinDetailContent p {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+#coinDetailContent a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#coinDetailContent a:hover {
+    color: var(--link-hover-color);
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: var(--header-bg); /* Use header background */
+    color: var(--input-placeholder-color); /* Reuse muted color */
+    box-shadow: 0 -2px 10px var(--shadow-color);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+footer a {
+    color: var(--header-heading-color); /* Reuse accent color */
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .header-controls {
+        flex-direction: column;
+        gap: 10px;
+        padding: 0 10px;
+    }
+
+    .search-container {
+        width: 100%;
+        order: 1; /* Pindahkan search ke atas di mobile */
+    }
+
+    #searchInput {
+        width: calc(100% - 30px);
+        margin-bottom: 0; /* Hapus margin bottom */
+    }
+
+    #searchButton {
+        width: auto; /* Biarkan tombol search ukuran auto */
+    }
+
+    .theme-toggle {
+        width: 100%; /* Tombol toggle full width di mobile */
+        order: 2; /* Pindahkan toggle ke bawah search */
+    }
+
+    main {
+        padding: 15px;
+        margin: 15px auto;
+    }
+
+    .crypto-table th, .crypto-table td {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .crypto-table td img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+}

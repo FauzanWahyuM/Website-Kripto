@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kripto Terkini - CoinGecko API</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Kripto Terkini</h1>
+        <div class="header-controls">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Cari koin (misal: Bitcoin, BTC)">
+                <button id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+            <button id="themeToggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <p class="loading-message" id="loadingMessage">Memuat data kripto...</p>
+        <div class="crypto-list-container">
+            <table class="crypto-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Koin</th>
+                        <th>Harga (USD)</th>
+                        <th>Perubahan 24h</th>
+                        <th>Kap. Pasar</th>
+                        </tr>
+                </thead>
+                <tbody id="cryptoTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="coinDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="coinDetailContent">
+                </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Kripto Terkini. Data disediakan oleh <a href="https://www.coingecko.com/" target="_blank">CoinGecko</a>.</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
