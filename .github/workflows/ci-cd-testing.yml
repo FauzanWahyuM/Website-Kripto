@@ -1,15 +1,14 @@
-# .github/workflows/ci-lint.yml
 name: Frontend CI Linting
 
 on:
   push:
     branches:
       - main
-      
+      - develop
   pull_request:
     branches:
       - main
-      
+      - develop
 
 jobs:
   lint:
@@ -25,7 +24,10 @@ jobs:
         node-version: '18'
 
     - name: Install dependencies
-      run: npm install # Menginstal semua dependencies dari package.json (termasuk eslint)
+      run: npm install
+
+    - name: Ensure ESLint is executable # <--- TAMBAHKAN LANGKAH INI
+      run: chmod +x ./node_modules/.bin/eslint
 
     - name: Run ESLint Linting
-      run: npx eslint script.js # <--- UBAH BARIS INI
+      run: npx eslint script.js
