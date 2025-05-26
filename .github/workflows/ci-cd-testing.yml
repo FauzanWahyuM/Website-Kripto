@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Ensure ESLint is executable # <--- TAMBAHKAN LANGKAH INI
+    - name: Ensure ESLint is executable 
       run: chmod +x ./node_modules/.bin/eslint
 
     - name: Run ESLint Linting

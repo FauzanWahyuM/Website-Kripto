@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Pastikan myAppUtils sudah tersedia dari utils.js
+    const { formatCurrentPrice, filterCryptoData, getPriceChangeClass } = window.myAppUtils;
+
     const cryptoTableBody = document.getElementById('cryptoTableBody');
     const loadingMessage = document.getElementById('loadingMessage');
     const searchInput = document.getElementById('searchInput');
@@ -12,15 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allCryptoData = [];
 
-    // --- Fungsi untuk Mengelola Tema ---
+    // --- Fungsi untuk Mengelola Tema (tetap sama) ---
     const applyTheme = (theme) => {
         if (theme === 'dark') {
             body.classList.add('dark-theme');
-            themeToggle.innerHTML = '<i class="fas fa-sun"></i>'; // Ikon matahari untuk dark mode
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
             localStorage.setItem('theme', 'dark');
         } else {
             body.classList.remove('dark-theme');
-            themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; // Ikon bulan untuk light mode
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
             localStorage.setItem('theme', 'light');
         }
     };
@@ -57,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
             displayCryptoData(data);
         } catch (error) {
             console.error("Error fetching crypto data:", error);
-            // Ubah colspan menjadi 5, karena ada 5 kolom tersisa
             cryptoTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--price-down-color);">Gagal memuat data kripto. Silakan coba lagi nanti.</td></tr>';
         } finally {
             loadingMessage.style.display = 'none';
@@ -68,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayCryptoData = (cryptos) => {
         cryptoTableBody.innerHTML = '';
         if (cryptos.length === 0) {
-            // Ubah colspan menjadi 5
             cryptoTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-color);">Tidak ada koin yang ditemukan.</td></tr>';
             return;
         }
@@ -76,7 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cryptos.forEach(coin => {
             const row = document.createElement('tr');
             row.setAttribute('data-coin-id', coin.id);
-            const priceChangeClass = coin.price_change_percentage_24h >= 0 ? 'price-up' : 'price-down';
+            // Gunakan fungsi utilitas untuk mendapatkan kelas CSS
+            const priceChangeClass = getPriceChangeClass(coin.price_change_percentage_24h);
 
             row.innerHTML = `
                 <td>${coin.market_cap_rank}</td>
@@ -84,26 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img src="${coin.image}" alt="${coin.name} icon">
                     ${coin.name} (${coin.symbol.toUpperCase()})
                 </td>
-                <td>$${coin.current_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })}</td>
+                <td>${formatCurrentPrice(coin.current_price)}</td>
                 <td class="${priceChangeClass}">${coin.price_change_percentage_24h ? coin.price_change_percentage_24h.toFixed(2) : 'N/A'}%</td>
                 <td>$${coin.market_cap.toLocaleString()}</td>
-                `;
+            `;
             cryptoTableBody.appendChild(row);
         });
     };
 
-    // Fungsi untuk mencari koin berdasarkan input pengguna (tetap sama)
+    // Fungsi untuk mencari koin berdasarkan input pengguna
     const searchCrypto = () => {
-        const searchTerm = searchInput.value.toLowerCase();
-        const filteredData = allCryptoData.filter(coin =>
-            coin.name.toLowerCase().includes(searchTerm) ||
-            coin.symbol.toLowerCase().includes(searchTerm)
-        );
+        const searchTerm = searchInput.value; // Ambil nilai mentah, fungsi utilitas akan menangani lowercase
+        const filteredData = filterCryptoData(allCryptoData, searchTerm); // Gunakan fungsi utilitas
         displayCryptoData(filteredData);
     };
 
+    // Event listener untuk tombol pencarian
     searchButton.addEventListener('click', searchCrypto);
 
+    // Event listener untuk input pencarian (tekan Enter)
     searchInput.addEventListener('keyup', (event) => {
         if (event.key === 'Enter') {
             searchCrypto();
@@ -141,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 currentCoinDetailInfo.innerHTML = `
                     <h2><img src="${coinDetail.image.small}" alt="${coinDetail.name} icon">${coinDetail.name} (${coinDetail.symbol.toUpperCase()})</h2>
-                    <p><strong>Harga Saat Ini (USD):</strong> $${coinDetail.market_data.current_price.usd.toLocaleString()}</p>
+                    <p><strong>Harga Saat Ini (USD):</strong> ${formatCurrentPrice(coinDetail.market_data.current_price.usd)}</p>
                     <p><strong>Peringkat Kapitalisasi Pasar:</strong> ${coinDetail.market_cap_rank}</p>
                     <p><strong>Kapitalisasi Pasar (USD):</strong> $${coinDetail.market_data.market_cap.usd.toLocaleString()}</p>
                     <p><strong>Deskripsi:</strong> ${coinDetail.description.en || 'Tidak ada deskripsi tersedia.'}</p>
