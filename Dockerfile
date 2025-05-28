@@ -1,27 +1,32 @@
-# Gunakan image Nginx sebagai base image untuk menyajikan file statis
+# Gunakan image Nginx sebagai base image
 FROM nginx:stable-alpine
 
 # Hapus file konfigurasi Nginx default
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Salin file konfigurasi Nginx kustom (jika Anda punya).
-# Jika tidak, Anda bisa membuat default.conf sederhana atau mengandalkan default Nginx.
-# Untuk website statis sederhana, default Nginx seringkali sudah cukup.
-# Jika Anda tidak punya file ini, hapus baris ini dan baris `RUN rm /etc/nginx/conf.d/default.conf`
-# COPY default.conf /etc/nginx/conf.d/default.conf
+# Salin file konfigurasi Nginx kustom Anda
+# Gunakan ADD yang lebih fleksibel, atau pastikan COPY sudah benar
+COPY default.conf /etc/nginx/conf.d/default.conf
 
-# Salin semua file website statis Anda ke direktori Nginx
-# Asumsi semua file HTML, CSS, JS, dan utils.js berada di root proyek
-# Jika Anda menggunakan 'npm run build' dan outputnya di folder 'dist', ubah menjadi 'COPY dist/ /usr/share/nginx/html/'
-COPY index.html /usr/share/nginx/html/index.html
-COPY style.css /usr/share/nginx/html/style.css
-COPY script.js /usr/share/nginx/html/script.js
-COPY utils.js /usr/share/nginx/html/utils.js
-# Tambahkan baris COPY untuk folder lain jika ada (misal: img/, fonts/)
-# COPY img/ /usr/share/nginx/html/img/
+# Buat direktori tujuan di dalam container
+RUN mkdir -p /usr/share/nginx/html/kripto-app
 
-# Exposed port dari container (port default Nginx)
+# Salin semua file website statis Anda ke direktori yang sesuai di dalam container
+# (sesuai dengan path 'alias' di default.conf)
+# Gunakan COPY dengan pola wildcard atau direktori untuk menyalin semua files
+COPY index.html /usr/share/nginx/html/kripto-app/index.html
+COPY style.css /usr/share/nginx/html/kripto-app/style.css
+COPY script.js /usr/share/nginx/html/kripto-app/script.js
+COPY utils.js /usr/share/nginx/html/kripto-app/utils.js
+
+# --- DEBUGGING: TAMBAHKAN LANGKAH INI UNTUK MEMERIKSA FILE SETELAH DISALIN ---
+# Ini akan menampilkan isi direktori di dalam container setelah proses COPY
+RUN ls -l /etc/nginx/conf.d/
+RUN ls -l /usr/share/nginx/html/kripto-app/
+# --- AKHIR DEBUGGING ---
+
+# Exposed port dari container
 EXPOSE 80
 
-# Command untuk menjalankan Nginx saat container dimulai
+# Command untuk menjalankan Nginx
 CMD ["nginx", "-g", "daemon off;"]
