@@ -1,18 +1,18 @@
-name: Frontend CI Linting
+name: Website-CI-CD
 
 on:
   push:
     branches:
-      - main
-      
+      - main 
   pull_request:
     branches:
-      - main
-      
+      - main 
 
 jobs:
-  Build-Test:
+  ci: # Mengganti nama job Build-Test menjadi 'ci' (Continuous Integration)
     runs-on: ubuntu-latest
+    outputs:
+      docker_image: ${{ steps.build_image.outputs.image }} # Mengirim output nama image Docker
 
     steps:
     - name: Checkout code
@@ -21,21 +21,88 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '18' # Pastikan ini sesuai dengan versi Node.js Anda
 
     - name: Install dependencies
       run: npm install
 
-    - name: Ensure ESLint is executable 
+    - name: Ensure ESLint is executable
       run: chmod +x ./node_modules/.bin/eslint
 
-    - name: Ensure Jest is executable 
+    - name: Ensure Jest is executable
       run: chmod +x ./node_modules/.bin/jest
     
     - name: Run ESLint Linting
       run: npx eslint script.js
 
-    - name: Run Unit Tests 
+    - name: Run Unit Tests
       run: npm test
       env:
         CI: true
+
+    - name: Login to GitHub Container Registry (GHCR)
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_TOKEN }}
+
+    - name: Build and Push Docker image
+      id: build_image # Memberikan ID untuk langkah ini agar outputnya bisa diakses
+      run: |
+        # Jika Anda punya script build (misal: npm run build yang menghasilkan folder 'dist')
+        # Jalankan di sini:
+        # npm run build
+
+        # Bangun image Docker
+        # Ganti 'fauzanwahyum/website-kripto' dengan username GitHub Anda dan nama repo Docker yang diinginkan
+        IMAGE_NAME=ghcr.io/${{ github.repository }}:latest
+        docker build -t $IMAGE_NAME .
+        
+        # Push image Docker ke GHCR
+        docker push $IMAGE_NAME
+        echo "image=$IMAGE_NAME" >> $GITHUB_OUTPUT # Menyimpan nama image sebagai output
+
+  cd: # Job baru untuk Continuous Deployment
+    name: Deploy to Azure VM
+    runs-on: ubuntu-latest
+    needs: ci # Job ini akan berjalan HANYA JIKA job 'ci' berhasil
+    # Hanya jalankan deployment jika push ke branch 'main' (produksi)
+    # atau jika ini adalah pull request ke 'main' (untuk staging/preview)
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+
+    steps:
+    - name: Checkout code (optional, jika tidak ada file yang perlu diakses dari repo)
+      uses: actions/checkout@v4
+
+    - name: Deploy to Azure VM
+      uses: appleboy/ssh-action@v1 # Menggunakan action SSH untuk koneksi ke VM
+      with:
+        host: ${{ secrets.AZURE_VM_IP }}
+        username: ${{ secrets.AZURE_VM_USERNAME }}
+        password: ${{ secrets.AZURE_VM_PASSWORD }} 
+        script: |
+          set -e # Keluar jika ada perintah yang gagal
+
+          # Login ke GHCR di VM
+          echo "Logging into GHCR on Azure VM..."
+          docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GHCR_TOKEN }}
+
+          # Hentikan dan hapus container lama jika ada
+          echo "Stopping and removing old container..."
+          docker stop website-kripto || true # '|| true' agar tidak gagal jika container tidak ada
+          docker rm website-kripto || true
+
+          # Pull image Docker terbaru dari GHCR
+          echo "Pulling latest Docker image..."
+          docker pull ${{ needs.ci.outputs.docker_image }}
+
+          # Jalankan container Docker baru
+          echo "Running new Docker container..."
+          docker run -d \
+            --name website-kripto \
+            -p 3000:80 \ # Mapping port 80 VM ke port 80 container (sesuai Dockerfile Nginx)
+            ${{ needs.ci.outputs.docker_image }}
+
+          echo "✅ Deploy berhasil! Akses di: http://${{ secrets.AZURE_VM_IP }}"
+          

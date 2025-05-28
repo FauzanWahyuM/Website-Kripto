@@ -64,7 +64,7 @@ describe('filterCryptoData', () => {
     test('should filter by partial match for "coin" and return Bitcoin and Binance Coin', () => {
         const filtered = filterCryptoData(mockCoins, 'coin'); // Search for "coin"
         expect(filtered).toHaveLength(2); // Harapkan 2 hasil
-        expect(filtered.map(c => c.id)).toEqual(expect.arrayContaining(['bitcoin', 'binance'])); // Harapkan Bitcoin dan Binance Coin
+        expect(filtered.map(c => c.id)).toEqual(expect.arrayContaining(['bitcoin', 'binancecoin'])); // Harapkan Bitcoin dan Binance Coin
     });
 
     test('should return empty array if no match found', () => {
