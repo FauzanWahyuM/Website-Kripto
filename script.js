@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const coinDetailModal = document.getElementById('coinDetailModal');
     const closeButton = document.querySelector('.modal .close-button');
     const coinDetailContent = document.getElementById('coinDetailContent');
-    
+
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
 
@@ -104,24 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener untuk tombol pencarian
     searchButton.addEventListener('click', searchCrypto);
 
-    // Event listener untuk input pencarian (tekan Enter)
-    searchInput.addEventListener('keyup', (event) => {
-        if (event.key === 'Enter') {
-            searchCrypto();
-        } else {
-            searchCrypto();
-        }
-    });
+    // Disederhanakan, hapus struktur if-else yang identik
+    searchInput.addEventListener('keyup', searchCrypto);
 
     cryptoTableBody.addEventListener('click', async (event) => {
-        let row = event.target.closest('tr');
-        if (row && row.dataset.coinId) {
-            const coinId = row.dataset.coinId;
+        const coinId = event.target.closest('tr')?.dataset?.coinId;
+        if (coinId) {
             try {
                 coinDetailContent.innerHTML = `
-                    <span class="close-button temporary-close-button">&times;</span>
-                    <div id="coinDetailInfo"></div>
-                `;
+                <span class="close-button temporary-close-button">&times;</span>
+                <div id="coinDetailInfo"></div>
+            `;
                 const currentCoinDetailInfo = document.getElementById('coinDetailInfo');
                 const currentCloseButton = coinDetailContent.querySelector('.temporary-close-button');
 
@@ -141,18 +134,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const lastUpdatedDate = coinDetail.last_updated ? new Date(coinDetail.last_updated).toLocaleString() : 'N/A';
 
                 currentCoinDetailInfo.innerHTML = `
-                    <h2><img src="${coinDetail.image.small}" alt="${coinDetail.name} icon">${coinDetail.name} (${coinDetail.symbol.toUpperCase()})</h2>
-                    <p><strong>Harga Saat Ini (USD):</strong> ${formatCurrentPrice(coinDetail.market_data.current_price.usd)}</p>
-                    <p><strong>Peringkat Kapitalisasi Pasar:</strong> ${coinDetail.market_cap_rank}</p>
-                    <p><strong>Kapitalisasi Pasar (USD):</strong> $${coinDetail.market_data.market_cap.usd.toLocaleString()}</p>
-                    <p><strong>Deskripsi:</strong> ${coinDetail.description.en || 'Tidak ada deskripsi tersedia.'}</p>
-                    <p><strong>Situs Web:</strong> <a href="${coinDetail.links.homepage[0] || '#'}" target="_blank">${coinDetail.links.homepage[0] ? new URL(coinDetail.links.homepage[0]).hostname : 'N/A'}</a></p>
-                    <p><strong>Forum/Komunitas:</strong>
-                        ${coinDetail.links.blockchain_site[0] ? `<a href="${coinDetail.links.blockchain_site[0]}" target="_blank">Blockchain</a>` : 'N/A'}
-                        ${coinDetail.links.official_forum_url[0] ? ` | <a href="${coinDetail.links.official_forum_url[0]}" target="_blank">Forum Resmi</a>` : ''}
-                    </p>
-                    <p><strong>Terakhir Diperbarui:</strong> ${lastUpdatedDate}</p>
-                `;
+                <h2><img src="${coinDetail.image.small}" alt="${coinDetail.name} icon">${coinDetail.name} (${coinDetail.symbol.toUpperCase()})</h2>
+                <p><strong>Harga Saat Ini (USD):</strong> ${formatCurrentPrice(coinDetail.market_data.current_price.usd)}</p>
+                <p><strong>Peringkat Kapitalisasi Pasar:</strong> ${coinDetail.market_cap_rank}</p>
+                <p><strong>Kapitalisasi Pasar (USD):</strong> $${coinDetail.market_data.market_cap.usd.toLocaleString()}</p>
+                <p><strong>Deskripsi:</strong> ${coinDetail.description.en || 'Tidak ada deskripsi tersedia.'}</p>
+                <p><strong>Situs Web:</strong> <a href="${coinDetail.links.homepage[0] || '#'}" target="_blank">${coinDetail.links.homepage[0] ? new URL(coinDetail.links.homepage[0]).hostname : 'N/A'}</a></p>
+                <p><strong>Forum/Komunitas:</strong>
+                    ${coinDetail.links.blockchain_site[0] ? `<a href="${coinDetail.links.blockchain_site[0]}" target="_blank">Blockchain</a>` : 'N/A'}
+                    ${coinDetail.links.official_forum_url[0] ? ` | <a href="${coinDetail.links.official_forum_url[0]}" target="_blank">Forum Resmi</a>` : ''}
+                </p>
+                <p><strong>Terakhir Diperbarui:</strong> ${lastUpdatedDate}</p>
+            `;
 
             } catch (error) {
                 console.error("Error fetching coin detail:", error);
@@ -160,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
 
     closeButton.addEventListener('click', () => {
         coinDetailModal.style.display = 'none';
