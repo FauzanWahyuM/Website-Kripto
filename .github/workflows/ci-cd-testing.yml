@@ -39,7 +39,19 @@ jobs:
       run: npm test
       env:
         CI: true
+    
+    - name: Install SonarScanner for npm projects
+      run: npm install -g @sonar/scan
 
+    - name: Run SonarQube Analysis
+      run: sonar \
+        -Dsonar.host.url=${{ secrets.SONAR_HOST }} \
+        -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+        # -Dsonar.projectKey=${{ github.event.repository.name }} \ 
+        # -Dsonar.projectName=${{ github.event.repository.name }}
+      env:
+        CI: true 
+    
     - name: Login to GitHub Container Registry (GHCR)
       uses: Docker/login-action@v2
       with:
