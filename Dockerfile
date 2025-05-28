@@ -21,8 +21,7 @@ COPY utils.js /usr/share/nginx/html/kripto-app/utils.js
 
 # --- DEBUGGING: TAMBAHKAN LANGKAH INI UNTUK MEMERIKSA FILE SETELAH DISALIN ---
 # Ini akan menampilkan isi direktori di dalam container setelah proses COPY
-RUN ls -l /etc/nginx/conf.d/
-RUN ls -l /usr/share/nginx/html/kripto-app/
+RUN ls -l /etc/nginx/conf.d/ && ls -l /usr/share/nginx/html/kripto-app/
 # --- AKHIR DEBUGGING ---
 
 # Exposed port dari container
