@@ -84,20 +84,20 @@ jobs:
 
           # Login ke GHCR di VM
           echo "Logging into GHCR on Azure VM..."
-          sudodocker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GHCR_TOKEN }}
+          sudo docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GHCR_TOKEN }}
 
           # Hentikan dan hapus container lama jika ada
           echo "Stopping and removing old container..."
-          sudo stop website-kripto || true # '|| true' agar tidak gagal jika container tidak ada
-          sudo rm website-kripto || true
+          sudo docker stop website-kripto || true # '|| true' agar tidak gagal jika container tidak ada
+          sudo docker rm website-kripto || true
 
           # Pull image Docker terbaru dari GHCR
           echo "Pulling latest Docker image..."
-          sudo pull ${{ needs.ci.outputs.docker_image }}
+          sudo docker pull ${{ needs.ci.outputs.docker_image }}
 
           # Jalankan container Docker baru
           echo "Running new Docker container..."
-          sudo run -d \
+          sudo docker run -d \
             --name website-kripto \
             -p 3000:80 \ # Mapping port 80 VM ke port 80 container (sesuai Dockerfile Nginx)
             ${{ needs.ci.outputs.docker_image }}
