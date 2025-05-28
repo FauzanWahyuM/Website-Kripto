@@ -90,7 +90,7 @@ jobs:
           # PERBAIKAN: Tambahkan tanda kutip di sekitar variabel image
           sudo docker run -d \
             --name website-kripto \
-            -p 3000:80 \
+            -p 4000:80 \
             "${{ needs.ci.outputs.docker_image }}"
 
           echo "✅ Deploy berhasil! Akses di: http://${{ secrets.AZURE_VM_IP }}:3000/Kripto/"
