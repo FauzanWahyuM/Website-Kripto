@@ -1,18 +1,18 @@
-name: Frontend CI Linting
+name: Website-CI-CD
 
 on:
   push:
     branches:
-      - main
-      
+      - main 
   pull_request:
     branches:
-      - main
-      
+      - main 
 
 jobs:
-  Build-Test:
+  ci: # Mengganti nama job Build-Test menjadi 'ci' (Continuous Integration)
     runs-on: ubuntu-latest
+    outputs:
+      docker_image: ${{ steps.build_image.outputs.image }} # Mengirim output nama image Docker
 
     steps:
     - name: Checkout code
@@ -21,21 +21,77 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '18' # Pastikan ini sesuai dengan versi Node.js Anda
 
     - name: Install dependencies
       run: npm install
 
-    - name: Ensure ESLint is executable 
+    - name: Ensure ESLint is executable
       run: chmod +x ./node_modules/.bin/eslint
 
-    - name: Ensure Jest is executable 
+    - name: Ensure Jest is executable
       run: chmod +x ./node_modules/.bin/jest
     
     - name: Run ESLint Linting
       run: npx eslint script.js
 
-    - name: Run Unit Tests 
+    - name: Run Unit Tests
       run: npm test
       env:
         CI: true
+
+    - name: Login to GitHub Container Registry (GHCR)
+      uses: Docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_TOKEN }}
+
+    - name: Build and Push Docker image
+      id: build_image
+      run: |
+        LOWERCASE_REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+        IMAGE_NAME=ghcr.io/$LOWERCASE_REPO_NAME:latest 
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
+        echo "image=$IMAGE_NAME" >> $GITHUB_OUTPUT
+
+  cd:
+    name: Deploy to Azure VM
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+
+    steps:
+    - name: Checkout code (optional)
+      uses: actions/checkout@v4
+
+    - name: Deploy to Azure VM
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.AZURE_VM_IP }}
+        username: ${{ secrets.AZURE_VM_USERNAME }}
+        password: ${{ secrets.AZURE_VM_PASSWORD }} 
+        script: |
+          set -e
+
+          echo "Logging into GHCR on Azure VM..."
+          sudo docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GHCR_TOKEN }}
+
+          echo "Stopping and removing old container..."
+          sudo docker stop website-kripto || true
+          sudo docker rm website-kripto || true
+
+          echo "Pulling latest Docker image..."
+          # PERBAIKAN: Tambahkan tanda kutip di sekitar variabel image
+          sudo docker pull "${{ needs.ci.outputs.docker_image }}"
+
+          echo "Running new Docker container..."
+          # PERBAIKAN: Tambahkan tanda kutip di sekitar variabel image
+          sudo docker run -d \
+            --name website-kripto \
+            -p 4000:80 \
+            "${{ needs.ci.outputs.docker_image }}"
+
+          echo "✅ Deploy berhasil! Akses di: http://${{ secrets.AZURE_VM_IP }}:3000/Kripto/"
+          
