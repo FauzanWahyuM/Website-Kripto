@@ -53,10 +53,10 @@ jobs:
         # Jika Anda punya script build (misal: npm run build yang menghasilkan folder 'dist')
         # Jalankan di sini:
         # npm run build
-
+        
         # Bangun image Docker
-        # Ganti 'fauzanwahyum/website-kripto' dengan username GitHub Anda dan nama repo Docker yang diinginkan
-        IMAGE_NAME=ghcr.io/${{ github.repository }}:latest
+        LOWERCASE_REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+        IMAGE_NAME=ghcr.io/$LOWERCASE_REPO_NAME:latest 
         docker build -t $IMAGE_NAME .
         
         # Push image Docker ke GHCR
