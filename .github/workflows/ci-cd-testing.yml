@@ -31,11 +31,12 @@ jobs:
       - name: Run Sonar Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST: ${{ secrets.SONAR_HOST }}
         run: |
           sonar \
             -Dsonar.projectKey=website-Kripto \
             -Dsonar.sources=. \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST }} \
+            -Dsonar.host.url=http://$SONAR_HOST \
             -Dsonar.token=$SONAR_TOKEN \
             -Dsonar.sourceEncoding=UTF-8
 
