@@ -41,7 +41,7 @@ jobs:
         CI: true
 
     - name: Login to GitHub Container Registry (GHCR)
-      uses: sudo/login-action@v2
+      uses: Docker/login-action@v2
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
